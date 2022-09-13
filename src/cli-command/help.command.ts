@@ -12,9 +12,10 @@ export default class HelpCommand implements CliCommandInterface {
           ${chalk.blue('main.js')} ${chalk.cyan('--<command> [--arguments]')}
 
       Commands:
-          ${chalk.cyan('--version')}:                   # ${chalk.blue('current version')}
-          ${chalk.cyan('--help')}:                      # ${chalk.blue('prints this guide')}
-          ${chalk.cyan('--import <path>')}:             # ${chalk.blue('imports data from TSV file')}
+          ${chalk.cyan('--version')}:                         # ${chalk.blue('current version')}
+          ${chalk.cyan('--help')}:                            # ${chalk.blue('prints this guide')}
+          ${chalk.cyan('--import <path>')}:                   # ${chalk.blue('imports data from TSV file')}
+          ${chalk.cyan('--generate <n> <filepath> <url>')}:   # ${chalk.blue('generates <n> offers in TSV file')}
     `);
   }
 }
