@@ -7,8 +7,7 @@ export default class ImportCommand implements CliCommandInterface {
   public readonly name = '--import';
 
   private onLine(line: string) {
-    const offer = createOffer(line);
-    console.log(offer);
+    console.log(createOffer(line));
   }
 
   private onComplete(count: number) {
@@ -31,7 +30,7 @@ export default class ImportCommand implements CliCommandInterface {
     try {
       await fileReader.read();
     } catch(err) {
-      console.log(`Can't read the file: ${getErrorMessage(err)}`);
+      console.warn(`Can't read the file: ${getErrorMessage(err)}`);
     }
   }
 }
