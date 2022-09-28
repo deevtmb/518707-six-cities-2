@@ -1,5 +1,6 @@
+import crypto from 'crypto';
 import { Offer } from '../types/offer.type.js';
-import { OfferType } from '../types/offer-type.enum.js';
+import { OfferCity } from '../common/offer-generator/const.js';
 
 export const createOffer = (row: string) => {
   const tokens = row.replace('\n', '').split('\t');
@@ -11,30 +12,32 @@ export const createOffer = (row: string) => {
     title,
     description,
     date: new Date(postDate),
-    city,
+    city: OfferCity[city],
     previewImage,
     offerImages: offerImages.split(';'),
-    isPremium: Boolean(isPremium),
-    isFavorite: Boolean(isFavorite),
+    isPremium: !!isPremium,
+    isFavorite: !!isFavorite,
     rating: +rating,
-    type: OfferType[type as 'Apartment' | 'Hotel' | 'House' | 'Room'],
+    type,
     rooms: +rooms,
     guests: +guests,
     price: +price,
-    features: features.split(';').map((feature) => ({name: feature})),
+    features: features.split(';').map((feature) => (feature)),
     user: {
       name,
       email,
       avatar,
       password,
-      isPro: Boolean(isPro)
+      isPro: !!isPro,
     },
     commentsCnt: +commentsCnt,
     location: {
-      latitude,
-      longitude
+      latitude: +latitude,
+      longitude: +longitude,
     }
   } as Offer;
 };
 
 export const getErrorMessage = (error: unknown): string => error instanceof Error ? error.message : '';
+
+export const createSHA256 = (line: string, salt: string): string => crypto.createHmac('sha256', salt).update(line).digest('hex');

@@ -1,5 +1,6 @@
-import { Feature } from './feature.type.js';
+import { City } from './city.type.js';
 import { Location } from './location.type.js';
+import { OfferFeature } from './offer-feature.enum.js';
 import { OfferType } from './offer-type.enum.js';
 import { User } from './user.type.js';
 
@@ -7,7 +8,7 @@ export type Offer = {
   title: string;
   description: string;
   date: Date;
-  city: string;
+  city: City;
   previewImage: string;
   offerImages: string[];
   isPremium: boolean;
@@ -17,7 +18,7 @@ export type Offer = {
   rooms: number;
   guests: number;
   price: number;
-  features: Feature[];
+  features: OfferFeature[];
   user: User;
   commentsCnt: number;
   location: Location;
