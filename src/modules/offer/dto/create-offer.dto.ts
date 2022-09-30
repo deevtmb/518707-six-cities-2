@@ -1,7 +1,7 @@
-import { City } from '../../../types/city.type';
-import { Location } from '../../../types/location.type';
-import { OfferFeature } from '../../../types/offer-feature.enum';
-import { OfferType } from '../../../types/offer-type.enum';
+import { City } from '../../../types/city.type.js';
+import { Location } from '../../../types/location.type.js';
+import { OfferFeature } from '../../../types/offer-feature.enum.js';
+import { OfferType } from '../../../types/offer-type.enum.js';
 
 export default class CreateOfferDTO {
   public title!: string;
