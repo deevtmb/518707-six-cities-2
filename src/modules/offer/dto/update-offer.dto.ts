@@ -3,7 +3,7 @@ import { Location } from '../../../types/location.type.js';
 import { OfferFeature } from '../../../types/offer-feature.enum.js';
 import { OfferType } from '../../../types/offer-type.enum.js';
 
-export default class CreateOfferDTO {
+export default class UpdateOfferDTO {
   public title!: string;
   public description!: string;
   public city!: City;

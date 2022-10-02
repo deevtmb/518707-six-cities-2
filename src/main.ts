@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { types } from '@typegoose/typegoose';
 import { Container } from 'inversify';
-import Application from './cli-application/application.js';
+import Application from './app/application.js';
 import LoggerService from './common/logger/logger.service.js';
 import { LoggerInterface } from './common/logger/logger.interface.js';
 import ConfigService from './common/config/config.service.js';
@@ -15,6 +15,9 @@ import { UserModel, UserEntity } from './modules/user/user.entity.js';
 import OfferService from './modules/offer/offer.service.js';
 import { OfferServiceInterface } from './modules/offer/offer-service.interface.js';
 import { OfferEntity, OfferModel } from './modules/offer/offer.entity.js';
+import ReviewService from './modules/review/review.service.js';
+import { ReviewServiceInterface } from './modules/review/review-service.interface.js';
+import { ReviewEntity, ReviewModel } from './modules/review/review.entity.js';
 
 
 const applicationContainer = new Container();
@@ -27,6 +30,8 @@ applicationContainer.bind<UserServiceInterface>(Component.UserServiceInterface).
 applicationContainer.bind<types.ModelType<UserEntity>>(Component.UserModel).toConstantValue(UserModel);
 applicationContainer.bind<OfferServiceInterface>(Component.OfferServiceInterface).to(OfferService);
 applicationContainer.bind<types.ModelType<OfferEntity>>(Component.OfferModel).toConstantValue(OfferModel);
+applicationContainer.bind<ReviewServiceInterface>(Component.ReviewServiceInterface).to(ReviewService);
+applicationContainer.bind<types.ModelType<ReviewEntity>>(Component.ReviewModel).toConstantValue(ReviewModel);
 
 const application = applicationContainer.get<Application>(Component.Application);
 

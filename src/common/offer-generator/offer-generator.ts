@@ -1,9 +1,9 @@
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
 import { MockData } from '../../types/mock-data.type.js';
 import { OfferType } from '../../types/offer-type.enum.js';
 import { generateRandomValue, getRandomItem, getRandomItems } from '../../utils/random.js';
 import { OfferGeneratorInterface } from './offer-generator.interface.js';
-import { IMAGES_COUNT, Price, GuestsCount, RoomsCount, Rating, DaysDiffRange, OfferCity } from './const.js';
+import { IMAGES_COUNT, Price, GuestsCount, RoomsCount, Rating, OfferCity } from './const.js';
 import { City } from '../../types/city.type.js';
 
 export default class OfferGenerator implements OfferGeneratorInterface {
@@ -12,7 +12,6 @@ export default class OfferGenerator implements OfferGeneratorInterface {
   public generate(): string {
     const title = getRandomItem<string>(this.mockData.titles);
     const description = getRandomItem<string>(this.mockData.descriptions);
-    const postDate = dayjs().subtract(generateRandomValue(DaysDiffRange.MIN, DaysDiffRange.MAX), 'day').toISOString();
     const city = getRandomItem<City>(Object.values(OfferCity));
     const previewImage = getRandomItem<string>(this.mockData.images);
     const offerImages = Array.from({length: IMAGES_COUNT}, () => getRandomItem<string>(this.mockData.images));
@@ -29,13 +28,12 @@ export default class OfferGenerator implements OfferGeneratorInterface {
     const avatar = getRandomItem<string>(this.mockData.avatars);
     const password = getRandomItem<string>(this.mockData.passwords);
     const isPro = generateRandomValue(0, 1).toString();
-    const commentsCnt = generateRandomValue(0, 1).toString();
+    const reviewsCnt = 0;
     const [latitude, longitude] = getRandomItem<[number, number]>(this.mockData.locations);
 
     return [
       title,
       description,
-      postDate,
       city.name,
       previewImage,
       offerImages.join(';'),
@@ -52,7 +50,7 @@ export default class OfferGenerator implements OfferGeneratorInterface {
       avatar,
       password,
       isPro,
-      commentsCnt,
+      reviewsCnt,
       latitude,
       longitude
     ].join('\t');
