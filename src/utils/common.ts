@@ -4,14 +4,13 @@ import { OfferCity } from '../common/offer-generator/const.js';
 
 export const createOffer = (row: string) => {
   const tokens = row.replace('\n', '').split('\t');
-  const [title, description, postDate, city, previewImage, offerImages, isPremium, isFavorite, rating,
-    type, rooms, guests, price, features, name, email, avatar, password, isPro, commentsCnt, latitude, longitude
+  const [title, description, city, previewImage, offerImages, isPremium, isFavorite, rating,
+    type, rooms, guests, price, features, name, email, avatar, password, isPro, reviewsCnt, latitude, longitude
   ] = tokens;
 
   return {
     title,
     description,
-    date: new Date(postDate),
     city: OfferCity[city],
     previewImage,
     offerImages: offerImages.split(';'),
@@ -30,7 +29,7 @@ export const createOffer = (row: string) => {
       password,
       isPro: !!isPro,
     },
-    commentsCnt: +commentsCnt,
+    reviewsCnt: +reviewsCnt,
     location: {
       latitude: +latitude,
       longitude: +longitude,

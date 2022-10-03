@@ -9,16 +9,19 @@ const {prop, modelOptions} = typegoose;
 
 export interface OfferEntity extends defaultClasses.Base {}
 
-@modelOptions({schemaOptions: {collection: 'offers'}})
+@modelOptions(
+  {
+    schemaOptions: {collection: 'offers'},
+    options: {
+      allowMixed: 0
+    }
+  })
 export class OfferEntity extends defaultClasses.TimeStamps {
   @prop({trim: true, required: true})
   public title!: string;
 
   @prop({trim: true, required: true})
   public description!: string;
-
-  @prop({required: true})
-  public date!: Date;
 
   @prop({required: true})
   public city!: City;
@@ -57,7 +60,7 @@ export class OfferEntity extends defaultClasses.TimeStamps {
   public userId!: Ref<UserEntity>;
 
   @prop({default: 0})
-  public commentsCnt!: number;
+  public reviewsCnt!: number;
 
   @prop({required: true})
   public location!: Location;

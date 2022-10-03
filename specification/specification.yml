@@ -399,7 +399,7 @@ components:
           type: string
           example: Уютный дом
 
-        date:
+        createdAt:
           type: string
           example: 2022-09-29T12:30:58.015Z
 
@@ -471,7 +471,7 @@ components:
           type: string
           example: abcde123qwerty
 
-        commentsCnt:
+        reviewsCnt:
           type: number
           example: 15
 
@@ -495,7 +495,7 @@ components:
           type: string
           example: Уютный дом
 
-        date:
+        createdAt:
           type: string
           example: 2022-09-29T12:30:58.015Z
 
@@ -543,7 +543,7 @@ components:
           type: number
           example: 1200
 
-        commentsCnt:
+        reviewsCnt:
           type: number
           example: 15
 
@@ -555,7 +555,7 @@ components:
           type: string
           example: Отличное соотношение цены и качества
 
-        date:
+        createdAt:
           type: string
           example: 2022-09-29T12:30:58.015Z
 
