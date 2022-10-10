@@ -62,31 +62,6 @@ paths:
         '401':
           description: Пользователь не авторизирован. Ошибка создания нового объявления.
 
-  /offers/{offersCount}:
-    get:
-      tags:
-        - offers
-      summary: Список с определенным количеством предложений по аренде.
-      description: Сервис возвращает отсортированный по дате публикации (по убыванию) список из {offersCount} предложений.
-        Список предложений по аренде могут запрашивать анонимные и авторизованные клиенты.
-      parameters:
-        - name: offersCount
-          in: path
-          description: Количество запрашиваемых предложений
-          required: true
-          schema:
-            type: number
-            example: 100
-      responses:
-        '200':
-          description: Получение списка предложений
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/offerShortInfo'
-
   /offers/{offerId}:
     get:
       tags:

@@ -5,7 +5,7 @@ import UpdateOfferDTO from './dto/update-offer.dto.js';
 
 export interface OfferServiceInterface {
   create(dto: CreateOfferDTO): Promise<DocumentType<OfferEntity>>
-  find(): Promise<DocumentType<OfferEntity>[]>
+  find(limit?: number): Promise<DocumentType<OfferEntity>[]>
   findById(offerId: string): Promise<DocumentType<OfferEntity> | null>
   updateById(offerId: string, dto: UpdateOfferDTO): Promise<DocumentType<OfferEntity> | null>
   deleteById(offerId: string): Promise <DocumentType<OfferEntity> | null>

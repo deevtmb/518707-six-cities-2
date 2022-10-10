@@ -11,3 +11,15 @@ plugins:
 extends:
   - "plugin:@typescript-eslint/recommended"
   - "htmlacademy/node"
+rules:
+  "@typescript-eslint/no-unused-vars":
+    - warn
+    - argsIgnorePattern: "^_"
+
+# overrides:
+#   - files:
+#     - "*.ts"
+#     rules:
+#       "@typescript-eslint/no-unused-vars":
+#         - warn
+#         - argsIgnorePattern: "^_"
