@@ -11,4 +11,5 @@ export interface OfferServiceInterface {
   deleteById(offerId: string): Promise <DocumentType<OfferEntity> | null>
   findFavorites(): Promise <DocumentType<OfferEntity>[] | null>
   findCityPremiumOffers(cityName: string): Promise <DocumentType<OfferEntity>[] | null>
+  exists(documentId: string): Promise <boolean>
 }

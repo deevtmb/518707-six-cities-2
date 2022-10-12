@@ -41,8 +41,8 @@ POST http://localhost:4000/offers HTTP/1.1
 Content-Type: application/json
 
 {
-  "title": "New Offer",
-  "description": "Brand new offer",
+  "title": "New Offer Title",
+  "description": "Brand new offer with description",
   "city": {
     "name": "Hamburg",
     "location": {
@@ -69,8 +69,7 @@ Content-Type: application/json
     "Washer",
     "Towels",
     "Fridge",
-    "Baby seat",
-    "Coffee machine"
+    "Baby seat"
   ],
   "userId": "63438f92bd3d7087de132cc0",
   "location": {
@@ -83,7 +82,7 @@ Content-Type: application/json
 
 ## Получить список из {count} предложений.
 
-GET http://localhost:4000/offers/?count=5 HTTP/1.1
+GET http://localhost:4000/offers/?limit=2 HTTP/1.1
 Content-Type: application/json
 
 ###
@@ -106,6 +105,28 @@ X-City-Name: Amsterdam
 ## Получить список избранных предложений
 
 GET http://localhost:4000/offers/favorites HTTP/1.1
+Content-Type: application/json
+
+###
+
+# Отзывы (комментарии)
+## Добавление отзыва
+
+POST http://localhost:4000/reviews HTTP/1.1
+Content-Type: application/json
+
+{
+  "text": "Review text",
+  "rating": 4,
+  "userId": "633448282b7c8a3f9b8172b8",
+  "offerId": "633448282b7c8a3f9b8172b0"
+}
+
+###
+
+## Получение отзывов для предложения
+
+GET http://localhost:4000/reviews/633448282b7c8a3f9b8172b0 HTTP/1.1
 Content-Type: application/json
 
 ###
