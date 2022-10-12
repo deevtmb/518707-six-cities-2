@@ -127,4 +127,8 @@ export default class OfferService implements OfferServiceInterface {
       {$limit: PREMIUM_OFFER_LIMIT}
     ]).exec();
   }
+
+  public async exists(documentId: string): Promise<boolean> {
+    return (await this.offerModel.exists({_id: documentId})) !== null;
+  }
 }

@@ -12,6 +12,9 @@ import { StatusCodes } from 'http-status-codes';
 import HttpError from '../../common/errors/http-error.js';
 import ReviewResponse from './response/review.response.js';
 import { fillDTO } from '../../utils/common.js';
+import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
+import { ValidateDTOMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
+import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
 
 type ParamsGetReviews = {
   offerId: string;
@@ -28,8 +31,21 @@ export default class ReviewController extends Controller {
 
     this.logger.info('Register routes for ReviewController');
 
-    this.addRoute({path: '/:offerId', method: HttpMethod.Get, handler: this.show});
-    this.addRoute({path: '/', method: HttpMethod.Post, handler: this.create});
+    this.addRoute({
+      path: '/:offerId',
+      method: HttpMethod.Get,
+      handler: this.show,
+      middlewares: [
+        new ValidateObjectIdMiddleware('offerId'),
+        new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
+      ]
+    });
+    this.addRoute({
+      path: '/',
+      method: HttpMethod.Post,
+      handler: this.create,
+      middlewares: [new ValidateDTOMiddleware(CreateReviewDTO)]
+    });
   }
 
   public async show(
