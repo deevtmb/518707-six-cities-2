@@ -17,7 +17,6 @@ export default class CreateReviewDTO {
   @Max(5, {message: 'Max rating is 5'})
   public rating!: number;
 
-  @IsMongoId({message: 'userId must be a valid id'})
   public userId!: string;
 
   @IsMongoId({message: 'offerId must be a valid id'})

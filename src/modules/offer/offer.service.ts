@@ -23,7 +23,10 @@ export default class OfferService implements OfferServiceInterface {
     return result;
   }
 
-  public async find(limit: number = DEFAULT_OFFER_LIMIT): Promise<DocumentType<OfferEntity>[]> {
+  public async find(
+    isAuthenticate = false,
+    limit = DEFAULT_OFFER_LIMIT
+  ): Promise<DocumentType<OfferEntity>[]> {
     return this.offerModel.aggregate([
       {
         $lookup: {
@@ -35,6 +38,7 @@ export default class OfferService implements OfferServiceInterface {
       },
       {
         $set: {
+          isFavorite: {$cond: {if: isAuthenticate, then: '$isFavorite', else: isAuthenticate }},
           reviewsCnt: {$size: '$reviews'},
           rating: {$ifNull: [{$round: [{$avg: '$reviews.rating'}, 1]}, 0]},
         }

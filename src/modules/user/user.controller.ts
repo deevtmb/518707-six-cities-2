@@ -9,12 +9,14 @@ import { ConfigInterface } from '../../common/config/config.interface.js';
 import { UserServiceInterface } from './user-service.interface.js';
 import HttpError from '../../common/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
-import { fillDTO } from '../../utils/common.js';
+import { createJWT, fillDTO } from '../../utils/common.js';
 import UserResponse from './response/user.response.js';
 import LoginUserDTO from './dto/login-user.dto.js';
 import { ValidateDTOMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middleware.js';
+import { JWT_ALGORITM } from './user.constant.js';
+import LoggedUserResponse from './response/logged-user.response.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -36,6 +38,11 @@ export default class UserController extends Controller {
       method: HttpMethod.Post,
       handler: this.login,
       middlewares: [new ValidateDTOMiddleware(LoginUserDTO)]
+    });
+    this.addRoute({
+      path: '/login',
+      method: HttpMethod.Get,
+      handler: this.checkAuthenticate
     });
     this.addRoute({
       path: '/:userId/avatar',
@@ -68,23 +75,31 @@ export default class UserController extends Controller {
 
   public async login(
     {body}: Request<Record<string, unknown>, Record<string, unknown>, LoginUserDTO>,
-    _res: Response,
+    res: Response,
   ): Promise<void> {
-    const existedUser = await this.userService.findByEmail(body.email);
+    const user = await this.userService.verifyUser(body, this.configService.get('SALT'));
 
-    if (!existedUser) {
+    if (!user) {
       throw new HttpError(
         StatusCodes.UNAUTHORIZED,
-        `User with email ${body.email} not found.`,
+        'Unauthorized',
         'UserController',
       );
     }
 
-    throw new HttpError(
-      StatusCodes.NOT_IMPLEMENTED,
-      `User ${existedUser.email} exists, but login feature not implemented yet`,
-      'UserController',
+    const token = await createJWT(
+      JWT_ALGORITM,
+      this.configService.get('JWT_SECRET'),
+      {email: user.email, id: user.id}
     );
+
+    this.ok(res, fillDTO(LoggedUserResponse, {email: user.email, token}));
+  }
+
+  public async checkAuthenticate(req: Request, res: Response) {
+    const user = await this.userService.findByEmail(req.user.email);
+
+    this.ok(res, fillDTO(LoggedUserResponse, user));
   }
 
   public async uploadAvatar(req: Request, res: Response) {
