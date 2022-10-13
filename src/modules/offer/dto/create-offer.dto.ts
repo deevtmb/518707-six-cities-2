@@ -2,7 +2,6 @@ import {
   IsString,
   IsArray,
   Length,
-  IsMongoId,
   ArrayMinSize,
   ArrayMaxSize,
   IsBoolean,
@@ -86,7 +85,6 @@ export default class CreateOfferDTO {
   @IsEnum(OfferFeature, {each: true})
   public features!: OfferFeature[];
 
-  @IsMongoId({message: 'userId must be a valid id'})
   public userId!: string;
 
   @ValidateNested()

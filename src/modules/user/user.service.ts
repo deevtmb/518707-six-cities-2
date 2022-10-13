@@ -5,6 +5,7 @@ import { UserServiceInterface } from './user-service.interface';
 import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { Component } from '../../types/component.type.js';
 import { inject,injectable } from 'inversify';
+import LoginUserDTO from './dto/login-user.dto.js';
 
 @injectable()
 export default class UserService implements UserServiceInterface {
@@ -35,5 +36,10 @@ export default class UserService implements UserServiceInterface {
     const existedUser = await this.findByEmail(dto.email);
 
     return existedUser ? existedUser : this.create(dto, salt);
+  }
+
+  public async verifyUser(dto: LoginUserDTO, salt: string): Promise<DocumentType<UserEntity> | null> {
+    const user = await this.findByEmail(dto.email);
+    return user && user.verifyPassword(dto.password, salt) ? user : null;
   }
 }

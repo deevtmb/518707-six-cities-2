@@ -14,6 +14,10 @@ import UpdateOfferDTO from './dto/update-offer.dto.js';
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { ValidateDTOMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
+import { PrivateRouteMiddleware } from '../../common/middlewares/private-route.middleware.js';
+import HttpError from '../../common/errors/http-error.js';
+import { StatusCodes } from 'http-status-codes';
+import { DEFAULT_OFFER_LIMIT } from './offer.constant.js';
 
 type ParamsGetOffer = {
   offerId: string;
@@ -30,12 +34,18 @@ export default class OfferController extends Controller {
     this.logger.info('Register routes for OfferController');
 
     this.addRoute({path: '/premium', method: HttpMethod.Get, handler: this.getPremium});
-    this.addRoute({path: '/favorites', method: HttpMethod.Get, handler: this.getFavorites});
+    this.addRoute({
+      path: '/favorites',
+      method: HttpMethod.Get,
+      handler: this.getFavorites,
+      middlewares: [new PrivateRouteMiddleware()]
+    });
     this.addRoute({
       path: '/favorites/:offerId',
       method: HttpMethod.Put,
       handler: this.updateFavoriteStatus,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDTOMiddleware(UpdateOfferDTO),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
@@ -55,6 +65,7 @@ export default class OfferController extends Controller {
       method: HttpMethod.Put,
       handler: this.update,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDTOMiddleware(UpdateOfferDTO),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
@@ -65,6 +76,7 @@ export default class OfferController extends Controller {
       method: HttpMethod.Delete,
       handler: this.delete,
       middlewares: [
+        new PrivateRouteMiddleware(),
         new ValidateObjectIdMiddleware('offerId'),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
       ],
@@ -73,27 +85,29 @@ export default class OfferController extends Controller {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDTOMiddleware(CreateOfferDTO)]
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDTOMiddleware(CreateOfferDTO)
+      ]
     });
     this.addRoute({path: '/', method: HttpMethod.Get, handler: this.index});
   }
 
   public async index(
-    {query}: Request<core.Query>,
+    {query, user}: Request<core.Query>,
     res: Response
   ): Promise<void> {
-    const offers = query.limit ?
-      await this.offerService.find(+query.limit) :
-      await this.offerService.find();
+    const limit = query.limit ?? DEFAULT_OFFER_LIMIT;
+    const offers = await this.offerService.find(!!user, +limit);
 
     this.ok(res, fillDTO(OfferResponse, offers));
   }
 
   public async create(
-    {body}: Request<Record<string, unknown>, Record<string, unknown>, CreateOfferDTO>,
+    {body, user: {id}}: Request<Record<string, unknown>, Record<string, unknown>, CreateOfferDTO>,
     res: Response
   ): Promise<void> {
-    const result = await this.offerService.create(body);
+    const result = await this.offerService.create({...body, userId: id});
     const offer = await this.offerService.findById(result.id);
     this.created(res, fillDTO(OfferExtendedResponse, offer));
   }
@@ -115,9 +129,20 @@ export default class OfferController extends Controller {
   }
 
   public async delete(
-    {params}: Request<core.ParamsDictionary | ParamsGetOffer>,
+    {params, user: {id}}: Request<core.ParamsDictionary | ParamsGetOffer>,
     res: Response
   ): Promise<void> {
+    const offer = await this.offerService.findById(params.offerId);
+    const userId = offer?.userId?._id.toString();
+
+    if (userId !== id) {
+      throw new HttpError(
+        StatusCodes.FORBIDDEN,
+        'Deleting prohibited',
+        'OfferController',
+      );
+    }
+
     await this.offerService.deleteById(params.offerId);
     this.ok(res, `Offer with id ${params.offerId} has been deleted.`);
   }

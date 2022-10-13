@@ -15,6 +15,7 @@ import { fillDTO } from '../../utils/common.js';
 import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-objectid.middleware.js';
 import { ValidateDTOMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
+import { PrivateRouteMiddleware } from '../../common/middlewares/private-route.middleware.js';
 
 type ParamsGetReviews = {
   offerId: string;
@@ -44,7 +45,10 @@ export default class ReviewController extends Controller {
       path: '/',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDTOMiddleware(CreateReviewDTO)]
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateDTOMiddleware(CreateReviewDTO)
+      ]
     });
   }
 
@@ -67,12 +71,10 @@ export default class ReviewController extends Controller {
   }
 
   public async create(
-    {body}: Request<object, object, CreateReviewDTO>,
+    {body, user: {id}}: Request<object, object, CreateReviewDTO>,
     res: Response
   ): Promise<void> {
-    const offer = await this.offerService.findById(body.offerId);
-
-    if (!offer) {
+    if (!await this.offerService.exists(body.offerId)) {
       throw new HttpError(
         StatusCodes.NOT_FOUND,
         `Offer with id ${body.offerId} not found.`,
@@ -80,7 +82,7 @@ export default class ReviewController extends Controller {
       );
     }
 
-    const review = await this.reviewService.create(body);
+    const review = await this.reviewService.create({...body, userId: id});
     this.created(res, fillDTO(ReviewResponse, review));
   }
 }
