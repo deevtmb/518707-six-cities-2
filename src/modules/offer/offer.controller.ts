@@ -18,6 +18,7 @@ import { PrivateRouteMiddleware } from '../../common/middlewares/private-route.m
 import HttpError from '../../common/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
 import { DEFAULT_OFFER_LIMIT } from './offer.constant.js';
+import { ConfigInterface } from '../../common/config/config.interface.js';
 
 type ParamsGetOffer = {
   offerId: string;
@@ -27,11 +28,12 @@ type ParamsGetOffer = {
 export default class OfferController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
+    @inject(Component.ConfigInterface) configService: ConfigInterface,
     @inject(Component.OfferServiceInterface) private readonly offerService: OfferServiceInterface
   ) {
-    super(logger);
+    super(logger, configService);
 
-    this.logger.info('Register routes for OfferController');
+    this.logger.info('Register routes for OfferController...');
 
     this.addRoute({path: '/premium', method: HttpMethod.Get, handler: this.getPremium});
     this.addRoute({
