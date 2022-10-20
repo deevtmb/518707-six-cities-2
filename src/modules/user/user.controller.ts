@@ -22,11 +22,11 @@ import LoggedUserResponse from './response/logged-user.response.js';
 export default class UserController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
-    @inject(Component.ConfigInterface) private readonly configService: ConfigInterface,
+    @inject(Component.ConfigInterface) configService: ConfigInterface,
     @inject(Component.UserServiceInterface) private readonly userService: UserServiceInterface
   ) {
-    super(logger);
-    this.logger.info('Register routes for UserController…');
+    super(logger, configService);
+    this.logger.info('Register routes for UserController...');
     this.addRoute({
       path: '/register',
       method: HttpMethod.Post,

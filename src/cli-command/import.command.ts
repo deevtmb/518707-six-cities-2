@@ -13,6 +13,9 @@ import {OfferModel} from '../modules/offer/offer.entity.js';
 import {UserModel} from '../modules/user/user.entity.js';
 import {LoggerInterface} from '../common/logger/logger.interface.js';
 import {DatabaseInterface} from '../common/database-client/database.interface.js';
+import { ConfigInterface } from '../common/config/config.interface.js';
+import { DEFAULT_FILEPATH } from './cli-command.constant.js';
+import ConfigService from '../common/config/config.service.js';
 
 const DEFAULT_DB_PORT = 27017;
 
@@ -22,6 +25,7 @@ export default class ImportCommand implements CliCommandInterface {
   private userService!: UserServiceInterface;
   private offerService!: OfferServiceInterface;
   private databaseService!: DatabaseInterface;
+  private configService!: ConfigInterface;
   private logger: LoggerInterface;
   private salt!: string;
 
@@ -33,6 +37,7 @@ export default class ImportCommand implements CliCommandInterface {
     this.offerService = new OfferService(this.logger, OfferModel);
     this.userService = new UserService(this.logger, UserModel);
     this.databaseService = new DatabaseService(this.logger);
+    this.configService = new ConfigService(this.logger);
   }
 
   private async saveOffer(offer: Offer) {
@@ -55,7 +60,15 @@ export default class ImportCommand implements CliCommandInterface {
     this.databaseService.disconnect();
   }
 
-  public async execute(filename: string, login: string, password: string, host: string, dbname: string, salt: string): Promise<void> {
+  public async execute(...parameters: string[]): Promise<void> {
+    const [filenameParam, loginParam, passwordParam, hostParam, dbnameParam, saltParam] = parameters;
+    const filename = filenameParam ?? DEFAULT_FILEPATH;
+    const login = loginParam ?? this.configService.get('DB_USER');
+    const password = passwordParam ?? this.configService.get('DB_PASSWORD');
+    const host = hostParam ?? this.configService.get('DB_HOST');
+    const dbname = dbnameParam ?? this.configService.get('DB_NAME');
+    const salt = saltParam ?? this.configService.get('SALT');
+
     const uri = getURI(login, password, host, DEFAULT_DB_PORT, dbname);
     this.salt = salt;
 

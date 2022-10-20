@@ -16,6 +16,7 @@ import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-ob
 import { ValidateDTOMiddleware } from '../../common/middlewares/validate-dto.middleware.js';
 import { DocumentExistsMiddleware } from '../../common/middlewares/document-exists.middleware.js';
 import { PrivateRouteMiddleware } from '../../common/middlewares/private-route.middleware.js';
+import { ConfigInterface } from '../../common/config/config.interface.js';
 
 type ParamsGetReviews = {
   offerId: string;
@@ -25,12 +26,13 @@ type ParamsGetReviews = {
 export default class ReviewController extends Controller {
   constructor(
     @inject(Component.LoggerInterface) logger: LoggerInterface,
+    @inject(Component.ConfigInterface) configService: ConfigInterface,
     @inject(Component.OfferServiceInterface) private readonly offerService: OfferServiceInterface,
     @inject(Component.ReviewServiceInterface) private readonly reviewService: ReviewServiceInterface
   ) {
-    super(logger);
+    super(logger, configService);
 
-    this.logger.info('Register routes for ReviewController');
+    this.logger.info('Register routes for ReviewController...');
 
     this.addRoute({
       path: '/:offerId',

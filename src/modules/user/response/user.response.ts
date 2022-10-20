@@ -1,8 +1,7 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
 export default class UserResponse {
-  @Expose({name: '_id'})
-  @Transform((value) => value.obj._id.toString())
+  @Expose()
   public id!: string;
 
   @Expose()

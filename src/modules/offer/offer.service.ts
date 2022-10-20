@@ -30,20 +30,20 @@ export default class OfferService implements OfferServiceInterface {
     return this.offerModel.aggregate([
       {
         $lookup: {
-          localField: '_id',
           from: 'reviews',
+          localField: '_id',
           foreignField: 'offerId',
           as: 'reviews'
         }
       },
       {
         $set: {
+          id: {$toString: '$_id'},
           isFavorite: {$cond: {if: isAuthenticate, then: '$isFavorite', else: isAuthenticate }},
           reviewsCnt: {$size: '$reviews'},
           rating: {$ifNull: [{$round: [{$avg: '$reviews.rating'}, 1]}, 0]},
         }
       },
-      {$unset: ['reviews', 'offerImages', 'features', 'guests', 'rooms', 'description', 'userId']},
       {$sort: { createdAt: SortType.Down }},
       {$limit: limit}
     ]).exec();
@@ -64,11 +64,11 @@ export default class OfferService implements OfferServiceInterface {
       },
       {
         $set: {
+          id: {$toString: '$_id'},
           reviewsCnt: {$size: '$reviews'},
           rating: {$ifNull: [{$round: [{$avg: '$reviews.rating'}, 1]}, 0]},
         }
-      },
-      {$unset: ['reviews']}
+      }
     ]);
 
     return await this.offerModel.populate(offers[0], 'userId');
@@ -97,13 +97,11 @@ export default class OfferService implements OfferServiceInterface {
       },
       {
         $set: {
+          id: {$toString: '$_id'},
           reviewsCnt: {$size: '$reviews'},
           rating: {$ifNull: [{$round: [{$avg: '$reviews.rating'}, 1]}, 0]},
         }
       },
-      {
-        $unset: ['reviews', 'offerImages', 'features', 'guests', 'rooms', 'description', 'userId']
-      }
     ]).exec();
   }
 
@@ -122,11 +120,11 @@ export default class OfferService implements OfferServiceInterface {
       },
       {
         $set: {
+          id: {$toString: '$_id'},
           reviewsCnt: {$size: '$reviews'},
           rating: {$ifNull: [{$round: [{$avg: '$reviews.rating'}, 1]}, 0]},
         }
       },
-      {$unset: ['reviews', 'offerImages', 'features', 'guests', 'rooms', 'description', 'userId']},
       {$sort: { createdAt: SortType.Down }},
       {$limit: PREMIUM_OFFER_LIMIT}
     ]).exec();
