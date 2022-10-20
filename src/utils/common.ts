@@ -11,8 +11,8 @@ import { DEFAULT_STATIC_IMAGES } from '../app/application.constant.js';
 
 export const createOffer = (row: string) => {
   const tokens = row.replace('\n', '').split('\t');
-  const [title, description, city, previewImage, offerImages, isPremium, isFavorite, rating,
-    type, rooms, guests, price, features, name, email, avatar, password, isPro, reviewsCnt, latitude, longitude
+  const [title, description, city, previewImage, offerImages, isPremium, isFavorite,
+    type, rooms, guests, price, features, name, email, password, isPro, latitude, longitude
   ] = tokens;
 
   return {
@@ -21,9 +21,8 @@ export const createOffer = (row: string) => {
     city: OfferCity[city],
     previewImage,
     offerImages: offerImages.split(';'),
-    isPremium: !!isPremium,
-    isFavorite: !!isFavorite,
-    rating: +rating,
+    isPremium: !!+isPremium,
+    isFavorite: !!+isFavorite,
     type,
     rooms: +rooms,
     guests: +guests,
@@ -32,11 +31,9 @@ export const createOffer = (row: string) => {
     user: {
       name,
       email,
-      avatar,
       password,
-      isPro: !!isPro,
+      isPro: !!+isPro,
     },
-    reviewsCnt: +reviewsCnt,
     location: {
       latitude: +latitude,
       longitude: +longitude,

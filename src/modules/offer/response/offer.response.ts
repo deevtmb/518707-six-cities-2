@@ -1,11 +1,10 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import { City } from '../../../types/city.type.js';
 import { Location } from '../../../types/location.type.js';
 import { OfferType } from '../../../types/offer-type.enum.js';
 
 export default class OfferResponse {
-  @Expose({name: '_id'})
-  @Transform((value) => value.obj._id.toString())
+  @Expose()
   public id!: string;
 
   @Expose()

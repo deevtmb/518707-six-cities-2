@@ -11,6 +11,8 @@
   "scripts": {
     "start": "npm run build && node ./dist/main.js",
     "start:dev": "nodemon",
+    "cli": "node ./dist/cli.js",
+    "cli:filldb": "npm run cli -- --generate && npm run cli -- --import",
     "build": "npm run clean && npm run compile",
     "lint": "eslint src/ --ext .ts",
     "compile": "tsc -p tsconfig.json",
