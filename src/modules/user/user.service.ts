@@ -6,6 +6,7 @@ import { LoggerInterface } from '../../common/logger/logger.interface.js';
 import { Component } from '../../types/component.type.js';
 import { inject,injectable } from 'inversify';
 import LoginUserDTO from './dto/login-user.dto.js';
+import UpdateUserDTO from './dto/update-user.dto.js';
 
 @injectable()
 export default class UserService implements UserServiceInterface {
@@ -30,6 +31,10 @@ export default class UserService implements UserServiceInterface {
 
   public async findById(userId: string): Promise<DocumentType<UserEntity> | null> {
     return this.userModel.findById(userId).exec();
+  }
+
+  public async updateById(userId: string, dto: UpdateUserDTO): Promise<DocumentType<UserEntity> | null> {
+    return this.userModel.findByIdAndUpdate(userId, dto, {new: true}).exec();
   }
 
   public async findOrCreate(dto: CreateUserDTO, salt: string): Promise<DocumentType<UserEntity>> {

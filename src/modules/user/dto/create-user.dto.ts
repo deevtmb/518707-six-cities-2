@@ -15,6 +15,7 @@ export default class CreateUserDTO {
   @Length(6, 12, {message: 'Min length for password is 6, max is 12'})
   public password!: string;
 
+  @IsOptional()
   @IsBoolean({message: 'Pro status is required'})
   public isPro!: boolean;
 }

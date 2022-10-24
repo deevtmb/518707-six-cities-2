@@ -49,7 +49,7 @@ export default class CreateOfferDTO {
   @Type(() => City)
   public city!: City;
 
-  @IsString({message: 'previewImage is required'})
+  @IsOptional()
   public previewImage!: string;
 
   @IsArray({message: 'Required 6 offerImages'})
@@ -74,7 +74,7 @@ export default class CreateOfferDTO {
 
   @IsInt({message: 'number of guests is required'})
   @Min(1, {message: 'Min number of guests is 1'})
-  @Max(10, {message: 'Max rating is 10'})
+  @Max(10, {message: 'Max number of guests is 10'})
   public guests!: number;
 
   @IsInt({message: 'price is required'})

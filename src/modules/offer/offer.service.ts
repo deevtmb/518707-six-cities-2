@@ -41,7 +41,7 @@ export default class OfferService implements OfferServiceInterface {
           id: {$toString: '$_id'},
           isFavorite: {$cond: {if: isAuthenticate, then: '$isFavorite', else: isAuthenticate }},
           reviewsCnt: {$size: '$reviews'},
-          rating: {$ifNull: [{$round: [{$avg: '$reviews.rating'}, 1]}, 0]},
+          rating: {$ifNull: [{$round: [{$avg: '$reviews.rating'}, 1]}, '$rating']},
         }
       },
       {$sort: { createdAt: SortType.Down }},
@@ -66,7 +66,7 @@ export default class OfferService implements OfferServiceInterface {
         $set: {
           id: {$toString: '$_id'},
           reviewsCnt: {$size: '$reviews'},
-          rating: {$ifNull: [{$round: [{$avg: '$reviews.rating'}, 1]}, 0]},
+          rating: {$ifNull: [{$round: [{$avg: '$reviews.rating'}, 1]}, '$rating']},
         }
       }
     ]);
@@ -99,7 +99,7 @@ export default class OfferService implements OfferServiceInterface {
         $set: {
           id: {$toString: '$_id'},
           reviewsCnt: {$size: '$reviews'},
-          rating: {$ifNull: [{$round: [{$avg: '$reviews.rating'}, 1]}, 0]},
+          rating: {$ifNull: [{$round: [{$avg: '$reviews.rating'}, 1]}, '$rating']},
         }
       },
     ]).exec();
@@ -122,7 +122,7 @@ export default class OfferService implements OfferServiceInterface {
         $set: {
           id: {$toString: '$_id'},
           reviewsCnt: {$size: '$reviews'},
-          rating: {$ifNull: [{$round: [{$avg: '$reviews.rating'}, 1]}, 0]},
+          rating: {$ifNull: [{$round: [{$avg: '$reviews.rating'}, 1]}, '$rating']},
         }
       },
       {$sort: { createdAt: SortType.Down }},

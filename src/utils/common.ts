@@ -11,7 +11,7 @@ import { DEFAULT_STATIC_IMAGES } from '../app/application.constant.js';
 
 export const createOffer = (row: string) => {
   const tokens = row.replace('\n', '').split('\t');
-  const [title, description, city, previewImage, offerImages, isPremium, isFavorite,
+  const [title, description, city, previewImage, offerImages, isPremium, rating,
     type, rooms, guests, price, features, name, email, password, isPro, latitude, longitude
   ] = tokens;
 
@@ -22,7 +22,7 @@ export const createOffer = (row: string) => {
     previewImage,
     offerImages: offerImages.split(';'),
     isPremium: !!+isPremium,
-    isFavorite: !!+isFavorite,
+    rating: +rating,
     type,
     rooms: +rooms,
     guests: +guests,

@@ -1,4 +1,6 @@
 # Тестовые данные
+
+## Запрос моковых данных (запуск json-server с помощью команды `npm run mock:server`)
 GET http://localhost:4321/api HTTP/1.1
 
 ###
@@ -10,10 +12,10 @@ POST http://localhost:4000/users/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "Tom",
-  "email": "tom@tom.com",
+  "name": "User",
+  "email": "usermail@mymail.com",
   "password": "mypassword",
-  "isPro": false
+  "isPro": true
 }
 
 ###
@@ -24,9 +26,17 @@ POST http://localhost:4000/users/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "mymail@gmail.com",
-  "password": "password2"
+  "email": "usermail@mymail.com",
+  "password": "mypassword"
 }
+
+###
+
+## Проверка статуса пользователя с помиощью {token}
+
+GET http://localhost:4000/users/login HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {token}
 
 ###
 
@@ -45,9 +55,10 @@ Content-Type: application/json
 
 ###
 
-## Создать предложение по аренде
+## Создание предложения авторизованным пользователем с валидным {token}
 POST http://localhost:4000/offers HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer {token}
 
 {
   "title": "New Offer Title",
@@ -59,17 +70,16 @@ Content-Type: application/json
       "longitude": 10.000654
     }
   },
-  "previewImage": "https://10.react.pages.academy/static/hotel/11.jpg",
+  "previewImage": "http://localhost:4000/static/1.jpg",
   "offerImages": [
-    "https://10.react.pages.academy/static/hotel/7.jpg",
-    "https://10.react.pages.academy/static/hotel/6.jpg",
-    "https://10.react.pages.academy/static/hotel/7.jpg",
-    "https://10.react.pages.academy/static/hotel/1.jpg",
-    "https://10.react.pages.academy/static/hotel/4.jpg",
-    "https://10.react.pages.academy/static/hotel/3.jpg"
+    "http://localhost:4000/static/1.jpg",
+    "http://localhost:4000/static/2.jpg",
+    "http://localhost:4000/static/3.jpg",
+    "http://localhost:4000/static/4.jpg",
+    "http://localhost:4000/static/5.jpg",
+    "http://localhost:4000/static/6.jpg"
   ],
   "isPremium": false,
-  "isFavorite": false,
   "type": "house",
   "rooms": 2,
   "guests": 2,
@@ -80,7 +90,6 @@ Content-Type: application/json
     "Fridge",
     "Baby seat"
   ],
-  "userId": "63438f92bd3d7087de132cc0",
   "location": {
     "latitude": 51.243402,
     "longitude": 6.791314
@@ -89,18 +98,36 @@ Content-Type: application/json
 
 ###
 
-## Получить подробную информацию по предложению
+## Получить подробную информацию по предложению с идентификатором {offerId}
 
-GET http://localhost:4000/offers/633448282b7c8a3f9b8172b5 HTTP/1.1
+GET http://localhost:4000/offers/{offerId} HTTP/1.1
 Content-Type: application/json
 
 ###
 
-##  Удалить предложение
-
-DELETE  http://localhost:4000/offers/633448282b7c8a3f9b8172b0 HTTP/1.1
+## Редактирование своего предложения с идентификатором {offerId} авторизованным пользователем с валидным {token}
+PUT http://localhost:4000/offers/{offerId} HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im15bWFpbEBnbWFpbC5jb20iLCJpZCI6IjYzMzQ0ODI4MmI3YzhhM2Y5YjgxNzJhZSIsImlhdCI6MTY2NjA4MDY2OCwiZXhwIjoxNjY2MjUzNDY4fQ.LpEkC9CWGZTSeHnUPCyA-dekNSW_-pb8PHhP4Bdza6s
+Authorization: Bearer {token}
+
+{
+  "title": "Updated title",
+  "description": "Updated description for this Offer",
+  "previewImage": "http://localhost:4000/static/4.jpg",
+  "isPremium": true,
+  "type": "house",
+  "rooms": 4,
+  "guests": 4,
+  "price": 11000
+}
+
+###
+
+## Удаление своего предложения с идентификатором {offerId} авторизованным пользователем с валидным {token}
+
+DELETE  http://localhost:4000/offers/{offerId} HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {token}
 
 ###
 
@@ -112,44 +139,57 @@ X-City-Name: Amsterdam
 
 ###
 
-## Получить список избранных предложений
+## Получить список избранных предложений авторизованным пользователем с валидным {token}
 
 GET http://localhost:4000/offers/favorites HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im15bWFpbEBnbWFpbC5jb20iLCJpZCI6IjYzMzQ0ODI4MmI3YzhhM2Y5YjgxNzJhZSIsImlhdCI6MTY2NjA4MDY2OCwiZXhwIjoxNjY2MjUzNDY4fQ.LpEkC9CWGZTSeHnUPCyA-dekNSW_-pb8PHhP4Bdza6s
+Authorization: Bearer {token}
 
 ###
 
-# Отзывы (комментарии)
-## Добавление отзыва
+## Изменение статуса Избранное для предложения с идентификатором {offerId} авторизованным пользователем с валидным {token}
 
-POST http://localhost:4000/reviews HTTP/1.1
+PUT http://localhost:4000/offers/favorites/{offerId} HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer {token}
 
 {
-  "text": "Review text",
-  "rating": 4,
-  "userId": "633448282b7c8a3f9b8172b8",
-  "offerId": "633448282b7c8a3f9b8172b0"
+  "isFavorite": true
 }
 
 ###
 
-## Получение отзывов для предложения
+# Отзывы (комментарии)
 
-GET http://localhost:4000/reviews/633448282b7c8a3f9b8172b0 HTTP/1.1
+## Добавление нового отзыва для предложения с идентификатором {offerId} авторизованным пользователем с валидным {token}
+
+POST http://localhost:4000/reviews HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer {token}
+
+{
+  "text": "Review text",
+  "rating": 4,
+  "offerId": "{offerId}"
+}
+
+###
+
+## Получение отзывов для предложения с идентификатором {offerId}
+
+GET http://localhost:4000/reviews/635538369ba80faea1c4de15 HTTP/1.1
 Content-Type: application/json
 
 ###
 
-## Отправка аватарки пользователю
+## Загрузка аватарки пользователя с иднетификатором {userId}
 
-POST http://localhost:4000/users/634f806e5fd17bf99a2bea72/avatar HTTP/1.1
+POST http://localhost:4000/users/{userId}/avatar HTTP/1.1
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
 ------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="avatar"; filename="avatar-max.jpg"
+Content-Disposition: form-data; name="avatar"; filename="avatar.jpg"
 Content-Type: image/jpeg
 
-< /Users/deevtmb/Desktop/Projects/518707-six-cities-2/markup/img/avatar-max.jpg
+< /Users/user/Desktop/avatar.jpg
 ------WebKitFormBoundary7MA4YWxkTrZu0gW--

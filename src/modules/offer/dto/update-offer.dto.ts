@@ -38,58 +38,71 @@ class City implements CityType {
 }
 
 export default class UpdateOfferDTO {
+  @IsOptional()
   @IsString({message: 'title is required'})
   @Length(10, 100, {message: 'title length min 10 and max 100 characters'})
-  public title!: string;
+  public title?: string;
 
+  @IsOptional()
   @IsString({message: 'description is required'})
   @Length(20, 1024, {message: 'description length min 20 and max 1024 characters'})
-  public description!: string;
+  public description?: string;
 
+  @IsOptional()
   @ValidateNested()
   @Type(() => City)
-  public city!: City;
+  public city?: City;
 
+  @IsOptional()
   @IsString({message: 'previewImage is required'})
-  public previewImage!: string;
+  public previewImage?: string;
 
+  @IsOptional()
   @IsArray({message: 'Required 6 offerImages'})
   @ArrayMinSize(6, {message: 'offerImages must contain 6 items'})
   @ArrayMaxSize(6, {message: 'offerImages must contain 6 items'})
-  public offerImages!: string[];
+  public offerImages?: string[];
 
+  @IsOptional()
   @IsBoolean({message: 'premium status required'})
-  public isPremium!: boolean;
+  public isPremium?: boolean;
 
   @IsOptional()
   @IsBoolean()
-  public isFavorite!: boolean;
+  public isFavorite?: boolean;
 
+  @IsOptional()
   @IsEnum(OfferType, {message: 'Valid values: apartment, house, room, hotel'})
-  public type!: OfferType;
+  public type?: OfferType;
 
+  @IsOptional()
   @IsInt({message: 'number of rooms is required'})
   @Min(1, {message: 'Min number of rooms is 1'})
   @Max(8, {message: 'Max number of rooms is 8'})
-  public rooms!: number;
+  public rooms?: number;
 
+  @IsOptional()
   @IsInt({message: 'number of guests is required'})
   @Min(1, {message: 'Min number of guests is 1'})
   @Max(10, {message: 'Max rating is 10'})
-  public guests!: number;
+  public guests?: number;
 
+  @IsOptional()
   @IsInt({message: 'price is required'})
   @Min(100, {message: 'Min price is 100'})
   @Max(100000, {message: 'Max price is 100000'})
-  public price!: number;
+  public price?: number;
 
+  @IsOptional()
   @IsEnum(OfferFeature, {each: true})
-  public features!: OfferFeature[];
+  public features?: OfferFeature[];
 
+  @IsOptional()
   @IsMongoId({message: 'userId must be a valid id'})
-  public userId!: string;
+  public userId?: string;
 
+  @IsOptional()
   @ValidateNested()
   @Type(() => Location)
-  public location!: Location;
+  public location?: Location;
 }
