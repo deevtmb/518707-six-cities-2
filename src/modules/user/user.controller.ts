@@ -17,6 +17,7 @@ import { ValidateObjectIdMiddleware } from '../../common/middlewares/validate-ob
 import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middleware.js';
 import { JWT_ALGORITM } from './user.constant.js';
 import LoggedUserResponse from './response/logged-user.response.js';
+import { PublicRouteMiddleware } from '../../common/middlewares/public-route.middleware.js';
 
 @injectable()
 export default class UserController extends Controller {
@@ -31,7 +32,10 @@ export default class UserController extends Controller {
       path: '/register',
       method: HttpMethod.Post,
       handler: this.create,
-      middlewares: [new ValidateDTOMiddleware(CreateUserDTO)]
+      middlewares: [
+        new PublicRouteMiddleware(),
+        new ValidateDTOMiddleware(CreateUserDTO)
+      ]
     });
     this.addRoute({
       path: '/login',
@@ -93,7 +97,7 @@ export default class UserController extends Controller {
       {email: user.email, id: user.id}
     );
 
-    this.ok(res, fillDTO(LoggedUserResponse, {email: user.email, token}));
+    this.ok(res, fillDTO(LoggedUserResponse, {email: user.email, avatar: user.avatar, token}));
   }
 
   public async checkAuthenticate(req: Request, res: Response) {
@@ -103,6 +107,9 @@ export default class UserController extends Controller {
   }
 
   public async uploadAvatar(req: Request, res: Response) {
-    this.created(res, {filepath: req.file?.path});
+    const {userId} = req.params;
+    const uploadFile = {avatar: req.file?.filename};
+    await this.userService.updateById(userId, uploadFile);
+    this.created(res, uploadFile);
   }
 }

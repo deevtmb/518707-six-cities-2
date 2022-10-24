@@ -19,6 +19,7 @@ import HttpError from '../../common/errors/http-error.js';
 import { StatusCodes } from 'http-status-codes';
 import { DEFAULT_OFFER_LIMIT } from './offer.constant.js';
 import { ConfigInterface } from '../../common/config/config.interface.js';
+import { UploadFileMiddleware } from '../../common/middlewares/upload-file.middleware.js';
 
 type ParamsGetOffer = {
   offerId: string;
@@ -51,6 +52,16 @@ export default class OfferController extends Controller {
         new ValidateObjectIdMiddleware('offerId'),
         new ValidateDTOMiddleware(UpdateOfferDTO),
         new DocumentExistsMiddleware(this.offerService, 'Offer', 'offerId')
+      ]
+    });
+    this.addRoute({
+      path: '/:offerId/preview',
+      method: HttpMethod.Post,
+      handler: this.uploadPreviewImage,
+      middlewares: [
+        new PrivateRouteMiddleware(),
+        new ValidateObjectIdMiddleware('offerId'),
+        new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'previewImage'),
       ]
     });
     this.addRoute({
@@ -123,9 +134,19 @@ export default class OfferController extends Controller {
   }
 
   public async update(
-    {body, params}: Request<core.ParamsDictionary | ParamsGetOffer, Record<string, unknown>, UpdateOfferDTO>,
+    {body, params, user: {id}}: Request<core.ParamsDictionary | ParamsGetOffer, Record<string, unknown>, UpdateOfferDTO>,
     res: Response
   ): Promise<void> {
+    const currentOffer = await this.offerService.findById(params.offerId);
+    const currentOfferUserId = currentOffer?.userId?.toString();
+
+    if (currentOfferUserId !== id) {
+      throw new HttpError(
+        StatusCodes.FORBIDDEN,
+        'Updating prohibited',
+        'OfferController',
+      );
+    }
     const offer = await this.offerService.updateById(params.offerId, body);
     this.ok(res, fillDTO(OfferExtendedResponse, offer));
   }
@@ -170,6 +191,13 @@ export default class OfferController extends Controller {
     res: Response
   ): Promise<void> {
     const offer = await this.offerService.updateById(params.offerId, body);
-    this.ok(res, fillDTO(OfferResponse, offer));
+    this.ok(res, fillDTO(OfferExtendedResponse, offer));
+  }
+
+  public async uploadPreviewImage(req: Request<core.ParamsDictionary | ParamsGetOffer>, res: Response) {
+    const {offerId} = req.params;
+    const updateDto = { previewImage: req.file?.filename };
+    await this.offerService.updateById(offerId, updateDto);
+    this.created(res, updateDto.previewImage);
   }
 }

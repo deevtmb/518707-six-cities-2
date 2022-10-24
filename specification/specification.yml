@@ -34,7 +34,7 @@ paths:
                 maxItems: 60
                 items:
                   type: object
-                  $ref: '#/components/schemas/offerShortInfo'
+                  $ref: '#/components/schemas/offer'
 
     post:
       tags:
@@ -46,7 +46,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/offer'
+              $ref: '#/components/schemas/extendedOffer'
 
       responses:
         '201':
@@ -54,7 +54,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/offer'
+                $ref: '#/components/schemas/extendedOffer'
 
         '400':
           description: Переданы некорректные данные для создания объявления.
@@ -83,7 +83,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/offerShortInfo'
+                $ref: '#/components/schemas/offer'
 
         '404':
           description: Предложение не найдено.
@@ -108,7 +108,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/offerShortInfo'
+                $ref: '#/components/schemas/offer'
 
         '400':
           description: Переданы некорректные данные для создания объявления.
@@ -156,7 +156,7 @@ paths:
                 type: array
                 maxItems: 3
                 items:
-                  $ref: '#/components/schemas/offerShortInfo'
+                  $ref: '#/components/schemas/offer'
 
   /offers/favorites:
     get:
@@ -174,7 +174,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/offerShortInfo'
+                  $ref: '#/components/schemas/offer'
 
         '401':
           description: Пользователь не авторизован.
@@ -229,6 +229,7 @@ paths:
         '404':
           description: Предложения с указаным идентификатором не существует.
 
+  /reviews:
     post:
       tags:
         - reviews
@@ -343,26 +344,9 @@ paths:
         '401':
           description: Пользователь не авторизован.
 
-  /users/logout:
-    delete:
-      tags:
-        - users
-      summary: Завершение сеанса пользователя.
-      description: Завершение пользовательского сеанса. Ресурс доступен только авторизованным клиентам.
-
-      responses:
-        '204':
-          description: Завершение пользовательского сеанса. Токен удален.
-
-        '400':
-          description: Ошибка завершения сеанса, токен не прошел проверку.
-
-        '401':
-          description: Пользователь не авторизован.
-
 components:
   schemas:
-    offer:
+    extendedOffer:
       type: object
 
       properties:
@@ -462,7 +446,7 @@ components:
               type: number
               example: 2.351499
 
-    offerShortInfo:
+    offer:
       type: object
 
       properties:

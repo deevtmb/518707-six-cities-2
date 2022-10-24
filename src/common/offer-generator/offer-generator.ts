@@ -12,10 +12,10 @@ export default class OfferGenerator implements OfferGeneratorInterface {
     const title = getRandomItem<string>(this.mockData.titles);
     const description = getRandomItem<string>(this.mockData.descriptions);
     const city = getRandomItem<City>(Object.values(OfferCity));
-    const previewImage = getRandomItem<string>(this.mockData.images);
-    const offerImages = Array.from({length: IMAGES_COUNT}, () => getRandomItem<string>(this.mockData.images));
+    const previewImage = `${generateRandomValue(1, 15)}.jpg`;
+    const offerImages = this.mockData.images.sort(() => Math.random() - 0.5).slice(0, IMAGES_COUNT);
     const isPremium = generateRandomValue(0, 1).toString();
-    const isFavorite = generateRandomValue(0, 1).toString();
+    const rating = generateRandomValue(1, 5, 1).toString();
     const type = getRandomItem(Object.values(OfferType));
     const rooms = generateRandomValue(RoomsCount.MIN, RoomsCount.MAX).toString();
     const guests = generateRandomValue(GuestsCount.MIN, GuestsCount.MAX).toString();
@@ -34,7 +34,7 @@ export default class OfferGenerator implements OfferGeneratorInterface {
       previewImage,
       offerImages.join(';'),
       isPremium,
-      isFavorite,
+      rating,
       type,
       rooms,
       guests,
